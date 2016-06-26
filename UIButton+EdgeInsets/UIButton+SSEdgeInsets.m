@@ -21,16 +21,19 @@ sizeWithAttributes:@{NSFontAttributeName:font}] : CGSizeZero;
     CGSize imageSize = [self imageForState:UIControlStateNormal].size;
     CGSize titleSize = SS_SINGLELINE_TEXTSIZE([self titleForState:UIControlStateNormal], self.titleLabel.font);
 
+    CGSize size = [self sizeThatFits:CGSizeZero];
     switch (type) {
         case SSImagePositionTypeLeft: {
             CGFloat delta = spacing / 2.f;
             self.imageEdgeInsets = UIEdgeInsetsMake(0, - delta, 0, delta);
             self.titleEdgeInsets = UIEdgeInsetsMake(0, delta, 0, - delta);
+            self.contentEdgeInsets = UIEdgeInsetsMake(0, delta, 0, delta);
             break;
         }
         case SSImagePositionTypeRight: {
             self.titleEdgeInsets = UIEdgeInsetsMake(0, - (imageSize.width + spacing), 0, imageSize.width);
             self.imageEdgeInsets = UIEdgeInsetsMake(0, titleSize.width, 0, - (titleSize.width + spacing));
+            self.contentEdgeInsets = UIEdgeInsetsMake(0, spacing/2, 0, spacing/2);
             break;
         }
         case SSImagePositionTypeTop: {
@@ -41,11 +44,19 @@ sizeWithAttributes:@{NSFontAttributeName:font}] : CGSizeZero;
             // raise the image and push it right so it appears centered
             //  above the text
             self.imageEdgeInsets = UIEdgeInsetsMake(- (titleSize.height + spacing), 0, 0, - titleSize.width);
+            
+            CGFloat paddingHorizonal = MAX(titleSize.width, imageSize.width)/2 - size.width/2;
+            CGFloat paddingVertical = MIN(imageSize.height, titleSize.height)/2 + spacing/2;
+            self.contentEdgeInsets = UIEdgeInsetsMake(paddingVertical, paddingHorizonal, paddingVertical, paddingHorizonal);
             break;
         }
         case SSImagePositionTypeBottom: {
             self.titleEdgeInsets = UIEdgeInsetsMake(- (imageSize.height + spacing), - imageSize.width, 0, 0);
             self.imageEdgeInsets = UIEdgeInsetsMake(0, 0, - (titleSize.height + spacing), - titleSize.width);
+            
+            CGFloat paddingHorizonal = MAX(titleSize.width, imageSize.width)/2 - size.width/2;
+            CGFloat paddingVertical = MIN(imageSize.height, titleSize.height)/2 + spacing/2;
+            self.contentEdgeInsets = UIEdgeInsetsMake(paddingVertical, paddingHorizonal, paddingVertical, paddingHorizonal);
             break;
         }
     }
